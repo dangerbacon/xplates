@@ -1,0 +1,32 @@
+{
+  "name": "XPlates",
+  "description": "A super fast template library",
+  "version": "0.9.0",
+  "keywords": [
+    "templates",
+    "html"
+  ],
+  "maintainers": [
+    {
+      "name": "Jeff Bacon",
+      "email": "xplates@psyci.com",
+      "web": ""
+    }
+  ],
+  "dependencies": {
+  
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "chai": "*",
+    "gulp": "*",
+    "gulp-uglify": "*",
+    "gulp-rename": "*",   
+    "gulp-insert": "*"    
+  },
+  "scripts": {
+    "test": "node ./node_modules/mocha/bin/mocha",
+    "build": "node ./node_modules/gulp/bin/gulp.js"
+  },
+  "license": "MIT"
+}
