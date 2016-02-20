@@ -1,5 +1,5 @@
 
-var XPlates = require('../src/xplates.js');
+var XPlates = require('../lib/xplates.js');
 
 
 

@@ -16,6 +16,6 @@ gulp.task('default', function()
     "  * @preserve \n **/\n";  
   
   //Read
-  gulp.src('src/xplates.js').pipe(uglify()).pipe(insert.prepend(header)).pipe(rename('xplates-'+pack.version+'.min.js')).pipe(gulp.dest('dist'));
-  gulp.src('src/xplates.js')               .pipe(insert.prepend(header)).pipe(rename('xplates-'+pack.version+'.js'    )).pipe(gulp.dest('dist'));
+  gulp.src('lib/xplates.js').pipe(uglify()).pipe(insert.prepend(header)).pipe(rename('xplates-'+pack.version+'.min.js')).pipe(gulp.dest('dist'));
+  gulp.src('lib/xplates.js')               .pipe(insert.prepend(header)).pipe(rename('xplates-'+pack.version+'.js'    )).pipe(gulp.dest('dist'));
 });
