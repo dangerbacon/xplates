@@ -1,4 +1,4 @@
-/** XPlates version 0.9.0
+/** XPlates version 0.9.2
   * @license undefined
   * @preserve 
  **/

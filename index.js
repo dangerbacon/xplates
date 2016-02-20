@@ -1,2 +1,2 @@
 
-module.exports = require('./src/xplates.js');
+module.exports = require('./lib/xplates.js');
