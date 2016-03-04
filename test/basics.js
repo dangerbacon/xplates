@@ -66,7 +66,6 @@ describe('HTML Template Generation', function()
       assert.equal(XPlates('html', '<% var a = 123; %><div><%= a %></div>')(), '<div>123</div>');
       assert.equal(XPlates('html', '<% var a = 123 %><div><%= a %></div>')(), '<div>123</div>');
       assert.equal(XPlates('html', '<div><% out += "Hello!" %></div>')(), '<div>Hello!</div>');
-
     });
     it('Works with "=" operator and escapes', function()
     {
@@ -75,6 +74,8 @@ describe('HTML Template Generation', function()
       assert.equal(XPlates('html', '<div><%= arg %></div>')('a&b'), '<div>a&amp;b</div>');
       assert.equal(XPlates('html', '<div><%= arg %></div>')('a"b'), '<div>a&quot;b</div>');
       assert.equal(XPlates('html', '<div><%= arg %></div>')("a'b"), '<div>a&apos;b</div>');
+      assert.equal(XPlates('html', '<div><%= arg; %></div>')("a'b"), '<div>a&apos;b</div>');
+      assert.equal(XPlates('html', '<div><%= arg ; ; %></div>')("a'b"), '<div>a&apos;b</div>');
       assert.equal(XPlates('html', '<div><%= arg %></div>')('a"<>&<>"b'), '<div>a&quot;&lt;&gt;&amp;&lt;&gt;&quot;b</div>');
     });
     it('Works with "==" operator and no escapes', function()
@@ -84,6 +85,8 @@ describe('HTML Template Generation', function()
       assert.equal(XPlates('html', '<div><%== arg %></div>')('a&b'), '<div>a&b</div>');
       assert.equal(XPlates('html', '<div><%== arg %></div>')('a"b'), '<div>a"b</div>');
       assert.equal(XPlates('html', '<div><%== arg %></div>')('a"<>&<>"b'), '<div>a"<>&<>"b</div>');
+      assert.equal(XPlates('html', '<div><%== arg;%></div>')('a"<>&<>"b'), '<div>a"<>&<>"b</div>');
+      assert.equal(XPlates('html', '<div><%== arg ; ; %></div>')('a"<>&<>"b'), '<div>a"<>&<>"b</div>');
       assert.equal(XPlates('html', '<div><%== arg //comment %></div>')('a<b'), '<div>a<b</div>');
     });
     it('Works with "?" operator', function()
@@ -204,6 +207,10 @@ describe('HTML Template Generation', function()
       assert.equal(XPlates('html', '    <div   id="   abc   "   >  <pre>      <pre>      a b c   </pre>    </pre>   </div>       ',[],null,{ strip: true })(), '<div id="abc"><pre>      <pre>      a b c   </pre>    </pre></div>');
       assert.equal(XPlates('html', '    <div   id="   abc   "   >  <script>      a b c   </script>  </div>       ',[],null,{ strip: true })(), '<div id="abc"><script>      a b c   </script></div>');
     });
+    it('Does not strip templates', function()
+    {
+      assert.equal(XPlates('html', '    <div     id="   abc   "   >      a b<%= "    " %>c     </div>       ',[],null,{ strip: true })(), '<div id="abc">a b    c</div>');
+    });
   });
 
   describe('Does multiple languages', function()
@@ -252,6 +259,13 @@ describe('HTML Template Generation', function()
       assert.equal(typeof mytemplates.hello, 'function');
       assert.equal(mytemplates.fullname('Mr.', 'Smith'), 'Mr. Smith');
       assert.equal(mytemplates.hello('Mr.', 'Smith'), 'Hello, Mr. Smith!');           
+    });
+    
+    it('Can use pre-defined variables in bundles', function()
+    {
+      xp = new XPlates.bundle();
+      xp('text', '<%= abc %>', [], 'test', { predefined: { abc: 123 } });
+      assert.equal(xp.test(), '123');
     });
   });
 

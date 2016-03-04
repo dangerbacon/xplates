@@ -192,12 +192,12 @@ You can turn off template parsing if you want.  This is useful when you have tem
     
     
 ### Preprocessing
-To make your templates a little faster, you can pre-compile your template with variables and calculations, so only necessary work is done at the last minute.
+To make your templates a little faster, you can pre-compile your template with variables and operations, so only necessary work is done at the last minute.
 
 To use this, add a "preprocess" object to the parameters, and use <# #> blocks:
 
-    var t = XPlates('html', '<div><#= hello #>, <%= name %>!</div>', ['name'], null, { preprocess: { hello: 'Ahoha' } });
-    //t('World') returns 'Aloha, World!';
+    var t = XPlates('html', '<div><#= greeting #>, <%= name %>!</div>', ['name'], null, { preprocess: { greeting: 'Hello' } });
+    //t('World') returns 'Hello, World!';
 
 Use the same template format, but with a <# #> instead of <% %>:
 
@@ -209,7 +209,17 @@ Use the same template format, but with a <# #> instead of <% %>:
     <#~~ array : index : value #>...<#~~#>                 //Reverse array iteration
     <#+ object : key : value #>...<#+#>                    //Object iteration
     <#! option=value #>                                    //Template option
+    
+### Pre-defined variables
+Your template can be compiled with variable references pre-defined, making things available later on without explicit argument.
 
+To use this, add a "predefined" object to the parameters:
+
+    var t = XPlates('html', '<div><%= greeting %>, <%= name %>!</div>', ['name'], null, { predefined: { greeting: 'Hello' } });
+    //t('World') returns 'Hello, World!';
+    
+This is different from pre-processing:  pre-processing variables are available only at compile time, while predefined variables are available at runtime.
+    
 ### Template Bundles
 
 #### Creating and using bundles
