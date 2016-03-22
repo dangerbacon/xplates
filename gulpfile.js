@@ -12,7 +12,7 @@ gulp.task('default', function()
   //Header
   var header = 
     "/** XPlates version " + pack.version + "\n" +
-    "  * @license " + pack.license.name + "\n" + 
+    "  * @license " + pack.license + "\n" + 
     "  * @preserve \n **/\n";  
   
   //Read

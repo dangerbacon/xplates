@@ -30,7 +30,8 @@ Template forms:
     <%~ array : index : value %>...<%~%>                   //Array iteration
     <%~~ array : index : value %>...<%~~%>                 //Reverse array iteration
     <%+ object : key : value %>...<%+%>                    //Object iteration
-    <%! option=value %>                                    //Template option
+    <%@ varname %>...<%@%>                                 //Capture output in variable
+    <%! option=value %>                                    //Template option    
     
 Preprocessing:
 
@@ -41,7 +42,8 @@ Preprocessing:
     <#~ array : index : value #>...<#~#>                   //Array iteration
     <#~~ array : index : value #>...<#~~#>                 //Reverse array iteration
     <#+ object : key : value #>...<#+#>                    //Object iteration
-    <#! option=value #>                                    //Template option
+    <#@ varname %>...<#@#>                                 //Capture output in variable
+    <#! option=value #>                                    //Template option    
     
 Template Bundles 
 
@@ -153,36 +155,14 @@ The following forms are supported:
     <%+ object : key %>...<%+%> //No value variable is okay!  You can still use object[key].
     <%+ object : : value %>...<%+%> //No key varaible is okay if you don't care about the key!
     <%+ object %>...<%+%> //No key or value variables are still okay if you don't need either!
+    
+#### <%@ varname %>...<%@%> Capture output as variable
+This will capture string output in between the two tags into a variable:
+
+    var t = XPlates('html', '<%@ x %>Hello, <%= name %>!<%@%><%== x %>  <%== x %>',['name']);
+    //t("World") returns "Hello, World! Hello, World!"
 
 #### <%! option=value %> Template options
-##### <%! outvar="name" %>
-By default, all template output goes to the variable "out", but you can change the output variable.
-
-Here's a useful example of making a page-selection component that repeats at the top and bottom of a page:
-
-      <%! outvar = "pagination" %>
-      <div class="pages">
-      <%~ pages : index : value %><a href="#<%= index %>"><%= value %></a><%~%>
-      </div>
-      
-      <%! outvar = "out"  %>
-      <%== pagination %>
-      (Contents here)
-      <%== pagination %>
-      
-##### <%! returnvar="name" %>
-By default, all templates return the variable "out", but you can change that if you prefer:
-
-     <%! returnvar = "my_variable" %>
-     <% my_variable = "Hello, world! %>
-     
-This changes independently of "outvar", so set both if you'd like.
-
-Alternatively, you can always just return your own thing with code:
-
-    <div>This goes to out!</div>
-    <% return "Ha ha!"; %>
-    
     
 ##### <%! noparse=boolean %>
 You can turn off template parsing if you want.  This is useful when you have templates inside templates:
@@ -208,6 +188,7 @@ Use the same template format, but with a <# #> instead of <% %>:
     <#~ array : index : value #>...<#~#>                   //Array iteration
     <#~~ array : index : value #>...<#~~#>                 //Reverse array iteration
     <#+ object : key : value #>...<#+#>                    //Object iteration
+    <#@ varname %>...<#@#>                                 //Capture output in variable
     <#! option=value #>                                    //Template option
     
 ### Pre-defined variables

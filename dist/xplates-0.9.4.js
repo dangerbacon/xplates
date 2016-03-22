@@ -1,5 +1,5 @@
-/** XPlates version 0.9.3
-  * @license undefined
+/** XPlates version 0.9.4
+  * @license MIT
   * @preserve 
  **/
 XPlates = (function()
@@ -9,8 +9,10 @@ XPlates = (function()
   var compileRegex = /<#([~!@$^*\-=+:.\?]*)[\s\r\n]*([\s\S]*?)[\s\r\n;]*#>/g;
   var loopmatch = /^(.*?)[\s\r\n]*(:[\s\r\n]*(\w+)?)?[\s\r\n]*(:[\s\r\n]*(\w+)?)?$/;
   var optionmatch = /^(\w+)[\s\r\n]*=(.*)$/;
+  var varnamematch = /^[a-z_$][\w$]*$/i;
+  
   var default_outvar = 'out';
-  var counter, in_string, varnames, outvar, returnvar, noparse, lang, filter;
+  var counter, in_string, varnames, retvar, outvar, outstack, noparse, lang, filter;
 
   //Template function
   function XPlates()
@@ -100,14 +102,6 @@ XPlates = (function()
     try { var value = JSON.parse(pieces[2]); } catch(e) { throw new Error("XPlates:  Invalid JSON for option value \"" + pieces[2] + "\""); }
     switch(key)
     {
-      case 'outvar':
-        if (typeof value !== 'string' || !value.match(/^\w+$/)) throw new Error("XPlates:  outvar must be a valid variable name! " + arg_content);
-        outvar = sVar(value,false,"");
-        break;
-      case 'returnvar':
-        if (typeof value !== 'string' || !value.match(/^\w+$/)) throw new Error("XPlates:  returnvar must be a valid variable name! " + arg_content);
-        returnvar = sVar(value,false,"");
-        break;
       case 'noparse':
         noparse = !!value;
         break;
@@ -115,6 +109,23 @@ XPlates = (function()
         throw new Error("XPlates:  Unknown option " + key);
     }
     return endstr;
+  }
+  ops['@'] = function(arg_content)
+  {
+    if (!arg_content)
+    {      
+      if (!outstack.length) throw new Error("XPlates:  Unmatched @ operators!");      
+      outvar = outstack.pop();
+      return sOut();
+    }
+    else
+    {
+      if (!varnamematch.test(arg_content)) throw new Error("XPlates:  Invalid variable name "+arg_content);
+      outstack.push(outvar);
+      outvar = arg_content;
+      sVar(arg_content);
+      return sOut() + arg_content + '="";';
+    }         
   }
 
   //Output verbatim
@@ -133,7 +144,8 @@ XPlates = (function()
     //Restart trackers
     counter = 0;
     varnames = {};
-    returnvar = outvar = sVar(arg_params.outvar || default_outvar, false, "");
+    outvar = retvar = sVar(arg_params.outvar || default_outvar, false, "");
+    outstack = [];
     noparse = false;
     in_string = false;
 
@@ -142,6 +154,7 @@ XPlates = (function()
     var index = 0;
     var langops = lang.ops||{};
     var match;
+    arg_regex.lastIndex = null;
     while (match = arg_regex.exec(arg_code))
     {
       jscode += verbatim(arg_code.substr(index, match.index-index), arg_params);
@@ -155,10 +168,14 @@ XPlates = (function()
       }
       index = match.index + match[0].length;
     }
+    
+    //Outvar unmatch?
+    if (outstack.length) throw new Error("XPlates:  Unmatched @ operators!");
+    if (outstack.length) throw new Error("XPlates:  Unmatched @ operators!");
 
     //Wrap it up
     jscode += verbatim(arg_code.substr(index, arg_code.length-index), arg_params);
-    jscode += sOut() + 'return ' + returnvar + '; }';
+    jscode += sOut() + 'return ' + retvar + '; }';
 
     //Build the prefix
     var jsprefix = 'return function ' + arg_funcname + '(' + arg_argnames.join(',') + '){var ';

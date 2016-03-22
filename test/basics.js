@@ -148,25 +148,21 @@ describe('HTML Template Generation', function()
       assert.equal(XPlates('html', '<%+ arg         %><i>!</i><%+%>')(t), '<i>!</i><i>!</i><i>!</i>');
       assert.equal(XPlates('html', '<%+ arg //comment %><i>!</i><%+%>')(t), '<i>!</i><i>!</i><i>!</i>');
     });
+    it('Works with "@" operator', function()
+    {
+      assert.equal(XPlates('html', '<%@ x %><%= n*n %><%@%><%== x %> <%== x %>',['n'])(2), '4 4');
+      assert.equal(XPlates('html', '<%@ x %><%= n*n %><%@%><%== x %> <%@ x %><%= n*n*n %><%@%><%== x %>',['n'])(2), '4 8');      
+      assert.equal(XPlates('html', '<%@ x %><%@ y %>!<%@%><%== y %><%== y %><%@%><%== x %><%== x %>',[])(), '!!!!');      
+      assert.equal(XPlates('html', 'A<%@ x %><%= n*n %><%@%>B<%== x %> <%== x %>C',['n'])(2), 'AB4 4C');
+      assert.equal(XPlates('html', '<% n*= 2 %><%@ x %><%= n*n %><%@%><%== x %> <%== x %>',['n'])(2), '16 16');
+      assert.throws(() => { XPlates('html', '<%@ x 4 %><%= n*n %><%@%><%== x %> <%== x %>',['n'])(2) });      
+      assert.throws(() => { XPlates('html', '<%@ x %><%= n*n %>',['n'])(2) });      
+      assert.throws(() => { XPlates('html', '<%@ x %><%= n*n %><%@%><%@%>',['n'])(2) });      
+    });
   });
 
   describe('Options', function()
   {
-    it('Works with "!" outvar change', function()
-    {
-      assert.equal(XPlates('html', 'abc<%! outvar="out" %>xyz')(), 'abcxyz');
-      assert.equal(XPlates('html', 'abc<%! outvar="z" %>xyz')(), 'abc');
-      assert.equal(XPlates('html', 'abc<% var z = "jkl"; %><%! outvar="z" %>xyz')(), 'abc');
-      assert.equal(XPlates('html', 'abc<% var z = "jkl"; %><%! outvar="out" %>xyz')(), 'abcxyz');
-      assert.equal(XPlates('html', 'abc<%! outvar="z" //comment %>xyz')(), 'abc');
-      assert.equal(XPlates('html', 'abc<%! outvar    =    "z" //comment %>xyz')(), 'abc');
-    });
-    it('Works with "!" returnvar change', function()
-    {
-      assert.equal(XPlates('html', 'abc<%! outvar="z" %>xyz<%! returnvar="z" %>')(), 'xyz');
-      assert.equal(XPlates('html', 'abc<%! returnvar="z" %>xyz')(), '');
-      assert.equal(XPlates('html', 'abc<%! returnvar="z" //comment %>xyz')(), '');
-    });
     it('Works with "!" noparse change', function()
     {
       assert.equal(XPlates('html', '<div><%== 1+1 %></div>')(), '<div>2</div>');
