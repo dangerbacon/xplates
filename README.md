@@ -106,7 +106,7 @@ You can use variables, code, or anything that can be converted to a string insid
 If you don't want your output escaped, use a double-equals:
 
     var t = XPlates('html', '<div><%== "I like apples & bananas!" %></div>');
-    //t() returns "<div>I like apples < bananas</div>"
+    //t() returns "<div>I like apples & bananas</div>"
         
 #### <%? condition %>...<%??%>...<%?%> Conditionals
 You can add conditional statements easily:

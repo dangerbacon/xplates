@@ -265,5 +265,13 @@ describe('HTML Template Generation', function()
     });
   });
 
+  describe('Simplifications', function()
+  {
+    it('Compiles no-operation templates to simple string returns', function()
+    {
+      assert.equal(XPlates('html', 'Hello, world!').toString(), 'function xplate(){;return "Hello, world!"; }');      
+      assert.equal(XPlates('html', 'Hello,   world!',null,'xplate',{strip:true}).toString(), 'function xplate(){;return "Hello, world!"; }');
+    });  
+  });
 });
 
