@@ -238,6 +238,7 @@ describe('HTML Template Generation', function()
       xp = new XPlates.bundle();
       xp('text', '<%= title %> <%= surname %>', ['title','surname'], 'fullname');
       xp('text', 'Hello, <%== this.fullname(title,surname) %>!', ['title','surname'], 'hello');
+      xp('text', 'Hello, <%% fullname(title,surname) %>!', ['title','surname'], 'hello_self');
     });
       
     it('Bundles together named templates', function()
@@ -246,6 +247,7 @@ describe('HTML Template Generation', function()
       assert.equal(typeof xp.hello, 'function');
       assert.equal(xp.fullname('Mr.', 'Smith'), 'Mr. Smith');
       assert.equal(xp.hello('Mr.', 'Smith'), 'Hello, Mr. Smith!');
+      assert.equal(xp.hello_self('Mr.', 'Smith'), 'Hello, Mr. Smith!');
     });
     
     it('Creates executable strings', function()
@@ -257,12 +259,23 @@ describe('HTML Template Generation', function()
       assert.equal(mytemplates.hello('Mr.', 'Smith'), 'Hello, Mr. Smith!');           
     });
     
+    it('Can export bundles to strings', function()
+    {
+      var exported_bundle = eval(xp.toString('output_test') + ';\noutput_test;');
+      assert.equal(typeof exported_bundle.fullname, 'function');
+      assert.equal(typeof exported_bundle.hello, 'function');
+      assert.equal(exported_bundle.fullname('Mr.', 'Smith'), 'Mr. Smith');
+      assert.equal(exported_bundle.hello('Mr.', 'Smith'), 'Hello, Mr. Smith!');
+      assert.equal(exported_bundle.hello_self('Mr.', 'Smith'), 'Hello, Mr. Smith!');
+    });
+    
     it('Can use pre-defined variables in bundles', function()
     {
       xp = new XPlates.bundle();
       xp('text', '<%= abc %>', [], 'test', { predefined: { abc: 123 } });
       assert.equal(xp.test(), '123');
     });
+
   });
 
   describe('Simplifications', function()

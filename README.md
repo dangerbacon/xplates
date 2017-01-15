@@ -26,6 +26,7 @@ Template forms:
     <% code %>                                             //Code execution
     <%= value %>                                           //Escaped output
     <%== value %>                                          //Unescaped output
+    <%% func() %>                                          //Unescaped template call; equivilent to <%== this.func() %>
     <%? condition %>...<%?? condition %>...<%??%>...<%?%>  //If, Else If, Else
     <%~ array : index : value %>...<%~%>                   //Array iteration
     <%~~ array : index : value %>...<%~~%>                 //Reverse array iteration

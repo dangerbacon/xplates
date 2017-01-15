@@ -1,7 +1,7 @@
 {
   "name": "xplates",
   "description": "A super fast template library",
-  "version": "0.9.5",
+  "version": "0.9.6",
   "keywords": [
     "templates",
     "html"

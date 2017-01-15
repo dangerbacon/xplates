@@ -1,3 +1,7 @@
+/** XPlates version 0.9.6
+  * @license MIT
+  * @preserve 
+ **/
 XPlates = (function()
 {
   //Constant regex
